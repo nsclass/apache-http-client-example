@@ -36,11 +36,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class App
 {
+    static final String HOST_NAME = "localhost";
+    static final int PORT_NUMBER = 9990;
+    static final String HTTP_SCHEME = " https";
+    static final String HTTP_URL = HTTP_SCHEME + "://" + HOST_NAME + ":" + PORT_NUMBER + "/rtdpadmin/services/rest/market/marketStrategy";
+
     public static void main(String[] args)
     {
         try
         {
-            downloadMarketStrategies();
+            downloadHttpResponse();
         }
         catch (Exception e)
         {
@@ -55,12 +60,7 @@ public class App
                 .loadTrustMaterial(new TrustSelfSignedStrategy())
                 .build();
 
-        // we can optionally disable hostname verification.
-        // if you don't want to further weaken the security, you don't have to include this.
         HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
-
-        // create an SSL Socket Factory to use the SSLContext with the trust self signed certificate strategy
-        // and allow all hosts verifier.
         SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, allowAllHosts);
 
         return HttpClients.custom()
@@ -70,10 +70,9 @@ public class App
 
     private static HttpClientContext createBasicAuth()
     {
-        HttpHost targetHost = new HttpHost("localhost", 9990, "https");
+        HttpHost targetHost = new HttpHost(HOST_NAME, PORT_NUMBER, HTTP_SCHEME);
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("admin", "TheNewpas$W0rd"));
+        credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("user", "pass"));
 
         AuthCache authCache = new BasicAuthCache();
         authCache.put(targetHost, new BasicScheme());
@@ -86,11 +85,11 @@ public class App
         return context;
     }
 
-    private static void downloadMarketStrategies() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException
+    private static void downloadHttpResponse() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException
     {
         CloseableHttpClient client = createHttpClient();
 
-        HttpGet httpGet = new HttpGet("https://localhost:9990/rtdpadmin/services/rest/market/marketStrategy");
+        HttpGet httpGet = new HttpGet(HTTP_URL);
         HttpClientContext context = createBasicAuth();
         try (CloseableHttpResponse response = client.execute(httpGet, context))
         {
@@ -102,7 +101,7 @@ public class App
                 {
                     try (InputStream inputStream = entity.getContent())
                     {
-                        String path = System.getProperty("user.dir") + "/build/marketStrategies.txt";
+                        String path = System.getProperty("user.dir") + "/build/output.txt";
                         saveToFile(path, inputStream);
                     }
                 }
