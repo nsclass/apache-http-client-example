@@ -36,12 +36,12 @@ dependencies {
 }
 
 application {
-    mainClassName = "com.pros.example.App"
+    mainClassName = "com.nseo.example.App"
 }
 
 jar {
     manifest {
-        attributes "Main-Class": "com.pros.example.App"
+        attributes "Main-Class": "com.nseo.example.App"
     }
 
     from {
