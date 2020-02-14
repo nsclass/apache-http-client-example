@@ -39,7 +39,7 @@ public class App
     static final String HOST_NAME = "localhost";
     static final int PORT_NUMBER = 9990;
     static final String HTTP_SCHEME = " https";
-    static final String HTTP_URL = HTTP_SCHEME + "://" + HOST_NAME + ":" + PORT_NUMBER + "/url";
+    static final String HTTP_URL = HTTP_SCHEME + "://" + HOST_NAME + ":" + PORT_NUMBER + "/rtdpadmin/services/rest/market/marketStrategy";
 
     public static void main(String[] args)
     {
